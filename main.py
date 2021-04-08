@@ -106,6 +106,7 @@ def news_delete(id):
     jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                       Jobs.user == current_user
                                       ).first()
+    print(jobs)
     if jobs:
         db_sess.delete(jobs)
         db_sess.commit()
