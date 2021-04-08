@@ -4,7 +4,7 @@ from data.jobs import Jobs
 from forms.user import LoginForm
 from forms.jobs import JobsForm
 from forms.reg_user import RegisterForm
-from flask import Flask, render_template, request, make_response, session, redirect
+from flask import Flask, render_template, request, make_response, session, redirect, abort
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
 app = Flask(__name__)
@@ -70,7 +70,7 @@ def edit_news(id):
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           Jobs.user == current_user
                                           ).first()
-        if jobs:
+        if jobs or current_user.id == 1:
             jobs.team_leader = form.team_leader.data
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
@@ -80,10 +80,10 @@ def edit_news(id):
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        news = db_sess.query(Jobs).filter(Jobs.id == id,
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           Jobs.user == current_user
                                           ).first()
-        if jobs:
+        if jobs or current_user.id == 1:
             jobs.team_leader = form.team_leader.data
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
@@ -101,13 +101,13 @@ def edit_news(id):
 
 @app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def jobs_delete(id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                       Jobs.user == current_user
                                       ).first()
-    print(jobs)
-    if jobs:
+    if jobs or current_user.id == 1:
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
         db_sess.delete(jobs)
         db_sess.commit()
     else:
