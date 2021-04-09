@@ -1,10 +1,10 @@
-from data import db_session
+from data import db_session, jobs_api
 from data.users import User
 from data.jobs import Jobs
 from forms.user import LoginForm
 from forms.jobs import JobsForm
 from forms.reg_user import RegisterForm
-from flask import Flask, render_template, request, make_response, session, redirect, abort
+from flask import Flask, render_template, request, make_response, session, redirect, abort, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
 app = Flask(__name__)
@@ -48,7 +48,6 @@ def add_news():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         jobs = Jobs()
-        jobs.team_leader = form.team_leader.data
         jobs.job = form.job.data
         jobs.is_finished = form.is_finished.data
         jobs.collaborators = form.collaborators.data
@@ -71,7 +70,6 @@ def edit_news(id):
                                           Jobs.user == current_user
                                           ).first()
         if jobs or current_user.id == 1:
-            jobs.team_leader = form.team_leader.data
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
             jobs.collaborators = form.collaborators.data
@@ -84,7 +82,6 @@ def edit_news(id):
                                           Jobs.user == current_user
                                           ).first()
         if jobs or current_user.id == 1:
-            jobs.team_leader = form.team_leader.data
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
             jobs.collaborators = form.collaborators.data
@@ -150,9 +147,14 @@ def logout():
     logout_user()
     return redirect("/")
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
 
 def main():
     db_session.global_init('db/Mars_Cool.db')
+    app.register_blueprint(jobs_api.blueprint)
     app.run(debug=True)
 
 
