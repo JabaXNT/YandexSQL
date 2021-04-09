@@ -43,7 +43,7 @@ def login():
 
 @app.route('/jobs', methods=['GET', 'POST'])
 @login_required
-def add_news():
+def add_jobs():
     form = JobsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -62,7 +62,7 @@ def add_news():
 
 @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_news(id):
+def edit_jobs(id):
     form = JobsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
