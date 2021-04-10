@@ -16,10 +16,11 @@ def get_jobs():
     return jsonify(
         {
             'jobs':
-                [item.to_dict(only=('team_leader', 'job', 'collaborators')) 
+                [item.to_dict(only=('team_leader', 'job', 'collaborators'))
                  for item in jobs]
         }
     )
+
 
 @blueprint.route('/api/jobs/<int:jobs_id>', methods=['GET'])
 def get_one_jobs(jobs_id):
@@ -33,6 +34,7 @@ def get_one_jobs(jobs_id):
                 'team_leader', 'job', 'collaborators'))
         }
     )
+
 
 @blueprint.route('/api/jobs', methods=['POST'])
 def create_jobs():
@@ -50,6 +52,7 @@ def create_jobs():
     db_sess.add(jobs)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
 
 @blueprint.route('/api/jobs/<int:jobs_id>', methods=['DELETE'])
 def delete_jobs(jobs_id):

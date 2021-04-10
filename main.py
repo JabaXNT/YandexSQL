@@ -31,7 +31,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        user = db_sess.query(User).filter(
+            User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
@@ -146,6 +147,7 @@ def reqister():
 def logout():
     logout_user()
     return redirect("/")
+
 
 @app.errorhandler(404)
 def not_found(error):

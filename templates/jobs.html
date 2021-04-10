@@ -8,34 +8,38 @@
         {{ form.job.label }}<br>
         {{ form.job(class="form-control") }}<br>
         {% for error in form.job.errors %}
-    <p class="alert alert-danger" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{ error }}
+    </div>
     </p>
     {% endfor %}
     <p>
         {{ form.work_size.label }}<br>
         {{ form.work_size(class="form-control") }}<br>
         {% for error in form.work_size.errors %}
-    <p content="alert alert-danger" role="alert">
+        <div class="alert alert-danger" role="alert">
         {{ error }}
+    </div>
     </p>
     {% endfor %}
     <p>
         {{ form.collaborators.label }}<br>
         {{ form.collaborators(class="form-control") }}<br>
         {% for error in form.collaborators.errors %}
-    <p class="alert alert-danger" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{ error }}
+    </div>
     </p>
     {% endfor %}
     <p>
         {{ form.is_finished.label }} {{ form.is_finished }}<br>
         {% for error in form.is_finished.errors %}
-    <p class="alert alert-danger" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{ error }}
-    </p>
+    </div>
     {% endfor %}
+    </p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
+    <div>{{message}}</div>
 </form>
 {% endblock %}
