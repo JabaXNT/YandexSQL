@@ -1,13 +1,17 @@
-from data import db_session, jobs_api
+from data import db_session
 from data.users import User
 from data.jobs import Jobs
+from data import jobs_resources
+from data import user_resources
 from forms.user import LoginForm
 from forms.jobs import JobsForm
 from forms.reg_user import RegisterForm
-from flask import Flask, render_template, request, make_response, session, redirect, abort, jsonify
+from flask import Flask, render_template, request, redirect, abort
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from flask_restful import abort, Api
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -17,6 +21,12 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+api.add_resource(jobs_resources.JobsListResource, '/api/v2/jobs')
+api.add_resource(jobs_resources.JobsResource, '/api/v2/jobs/<int:jobs_id>')
+api.add_resource(user_resources.UserListResource, '/api/v2/users')
+api.add_resource(user_resources.UserResource, '/api/v2/users/<int:user_id>')
 
 
 @app.route("/")
@@ -165,14 +175,9 @@ def logout():
     return redirect("/")
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
 def main():
     db_session.global_init('db/Mars_Cool.db')
-    app.register_blueprint(jobs_api.blueprint)
+#    app.register_blueprint(jobs_api.blueprint)
     app.run(debug=True)
 
 
