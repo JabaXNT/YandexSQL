@@ -16,7 +16,7 @@ def get_jobs():
     return jsonify(
         {
             'jobs':
-                [item.to_dict(only=('team_leader', 'job', 'collaborators'))
+                [item.to_dict(only=('job', 'team_leader', 'work_size', 'collaborators', 'is_finished'))
                  for item in jobs]
         }
     )
@@ -31,7 +31,7 @@ def get_one_jobs(jobs_id):
     return jsonify(
         {
             'jobs': jobs.to_dict(only=(
-                'team_leader', 'job', 'collaborators'))
+                'job', 'team_leader', 'work_size', 'collaborators', 'is_finished'))
         }
     )
 
@@ -41,13 +41,18 @@ def create_jobs():
     if not request.json:
         return jsonify({'error': 'Empty request'})
     elif not all(key in request.json for key in
-                 ['team_leader', 'job', 'collaborators']):
+                 ['id', 'job', 'team_leader', 'work_size', 'collaborators', 'is_finished']):
         return jsonify({'error': 'Bad request'})
     db_sess = db_session.create_session()
+    if db_sess.query(Jobs).filter(Jobs.id == request.json['id']).first() is not None:
+        return jsonify({'error': 'ID already exists'})
     jobs = Jobs(
+        id=request.json['id'],
         team_leader=request.json['team_leader'],
         job=request.json['job'],
         collaborators=request.json['collaborators'],
+        work_size=request.json['work_size'],
+        is_finished=request.json['is_finished'],
     )
     db_sess.add(jobs)
     db_sess.commit()

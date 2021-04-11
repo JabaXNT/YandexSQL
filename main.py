@@ -49,10 +49,13 @@ def add_jobs():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         jobs = Jobs()
+        jobs.team_leader = current_user.id
         jobs.job = form.job.data
-        jobs.is_finished = form.is_finished.data
-        jobs.collaborators = form.collaborators.data
         jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        if current_user.id == 1:
+            jobs.team_leader = form.team_leader.data
         current_user.jobs.append(jobs)
         db_sess.merge(current_user)
         db_sess.commit()
@@ -70,7 +73,13 @@ def edit_jobs(id):
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           Jobs.user == current_user
                                           ).first()
-        if jobs or current_user.id == 1:
+        if current_user.id == 1:
+            jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
+        if jobs:
+            if current_user.id == 1:
+                jobs.team_leader = form.team_leader.data
+            else:
+                jobs.team_leader = current_user.id
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
             jobs.collaborators = form.collaborators.data
@@ -82,11 +91,18 @@ def edit_jobs(id):
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
                                           Jobs.user == current_user
                                           ).first()
+        if current_user.id == 1:
+            jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
         if jobs or current_user.id == 1:
+            jobs.team_leader = current_user.id
             jobs.job = form.job.data
             jobs.is_finished = form.is_finished.data
             jobs.collaborators = form.collaborators.data
             jobs.work_size = form.work_size.data
+            if current_user.id == 1:
+                jobs.team_leader = form.team_leader.data
+                if db_sess.query(Jobs).filter(Jobs.id == jobs.team_leader).first() is None:
+                    jobs.team_leader = 1
             db_sess.commit()
             return redirect('/')
         else:

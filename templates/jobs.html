@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Добавление новости</h1>
+<h1>{{title}}</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
+    {% if current_user.id == 1 and title == 'Редактирование новости' %}
+        <p>
+        {{ form.team_leader.label }}<br>
+        {{ form.team_leader(class="form-control") }}<br>
+        {% for error in form.team_leader.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    {% endif %}
     <p>
         {{ form.job.label }}<br>
         {{ form.job(class="form-control") }}<br>
@@ -11,16 +21,14 @@
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
-    </p>
     {% endfor %}
     <p>
         {{ form.work_size.label }}<br>
         {{ form.work_size(class="form-control") }}<br>
         {% for error in form.work_size.errors %}
-        <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
-    </p>
     {% endfor %}
     <p>
         {{ form.collaborators.label }}<br>
@@ -29,15 +37,9 @@
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
-    </p>
     {% endfor %}
     <p>
-        {{ form.is_finished.label }} {{ form.is_finished }}<br>
-        {% for error in form.is_finished.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
+        {{ form.is_finished.label }} {{ form.is_finished }}
     </p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     <div>{{message}}</div>

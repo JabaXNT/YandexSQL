@@ -27,4 +27,4 @@ class Jobs(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     def __repr__(self):
         return f"{self.id} {self.job} {self.work_size} {self.collaborators} \
-{self.speciality} {self.end_date} {self.start_date} {self.is_finished}"
+             {self.end_date} {self.start_date} {self.is_finished}"
