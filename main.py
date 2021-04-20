@@ -14,7 +14,6 @@ import os
 
 app = Flask(__name__)
 api = Api(app)
-run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
